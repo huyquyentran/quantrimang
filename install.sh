@@ -1,7 +1,10 @@
 #! /bin/bash
 
-curl https://raw.githubusercontent.com/huyquyentran/quantrimang/main/qdns.sh --output /usr/local/bin/qdns
-curl https://raw.githubusercontent.com/huyquyentran/quantrimang/main/qdns.conf --output /etc/qdns.conf
+echo "Installing..."
+
+
+curl -s https://raw.githubusercontent.com/huyquyentran/quantrimang/main/qdns.sh --output /usr/local/bin/qdns
+curl -s https://raw.githubusercontent.com/huyquyentran/quantrimang/main/qdns.conf --output /etc/qdns.conf
 
 chmod 755 /usr/local/bin/qdns
 chmod +x /usr/local/bin/qdns
