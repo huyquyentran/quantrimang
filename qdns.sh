@@ -1,6 +1,6 @@
 #! /bin/bash
 
-hostIp = $(hostname -I | awk '{print $1}')
+hostIp=$(hostname -I | awk '{print $1}')
 
 function main() {
     CFG_FILE=/etc/qdns.conf
@@ -62,7 +62,7 @@ function createBackupZone() {
     local domain=$1
     local masterIP=$hostIp
 
-    if [[ $ns2 -ne 0 ]]; then
+    if [ ! -z "$ns2" ]; then
         ssh root@$ns2 '/bin/echo -e "zone \"'$domain'\" {\n\ttype slave;\n\tfile \"/var/named/slaves/'$domain'\";\n\tmasters { '$masterIP'; };\n};\n" >> /etc/named.conf; systemctl restart named'
     fi
 
@@ -123,7 +123,7 @@ function addForwardZone() {
     read ip
     validateIp $ip
 
-    if [[ $ns2 -ne 0 ]]; then
+    if [ -z "$ns2" ]; then
         echo -e "\$TTL 86400
 @ IN SOA ns1.${domain}. root.${domain}. (
 \t1 ;Serial
@@ -247,12 +247,13 @@ function createReverseZoneWhenCreateARecord() {
 
     if [[ -f "$reverseFile" ]]; then
         echo "$netAddress IN PTR $subDomain.$domain." >>$reverseFile
+        systemctl restart named
         return
     fi
 
     local masterIP=$hostIp
 
-    if [[ $ns2 -ne 0 ]]; then
+    if [ -z "$ns2" ]; then
         echo -e "\$TTL 86400
 @ IN SOA ns1.${domain}. root.${domain}. (
 \t1 ;Serial
@@ -306,7 +307,7 @@ function createReverseZone() {
 
     local masterIP=$hostIp
 
-    if [[ $ns2 -ne 0 ]]; then
+    if [ -z "$ns2" ]; then
         echo -e "\$TTL 86400
 @ IN SOA ns1.${domain}. root.${domain}. (
 \t1 ;Serial
